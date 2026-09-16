@@ -9,10 +9,10 @@ import { Config } from "@/config/config"
 import { ToolID } from "./schema"
 import { TRUNCATION_DIR } from "./truncation-dir"
 
-const RETENTION = Duration.days(7)
+const RETENTION = Duration.hours(24)
 
-export const MAX_LINES = 2000
-export const MAX_BYTES = 50 * 1024
+export const MAX_LINES = 500
+export const MAX_BYTES = 20 * 1024
 export const DIR = TRUNCATION_DIR
 export const GLOB = path.join(TRUNCATION_DIR, "*")
 

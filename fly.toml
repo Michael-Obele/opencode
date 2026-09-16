@@ -1,0 +1,36 @@
+app = "opencode-serve"
+primary_region = "iad"
+
+[build]
+  dockerfile = "packages/opencode/Dockerfile"
+
+[env]
+  PORT = "4096"
+  OPENCODE_DISABLE_SHARE = "1"
+  NODE_ENV = "production"
+
+[http_service]
+  internal_port = 4096
+  force_https = true
+  auto_stop_machines = "suspend"
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ["app"]
+
+  [http_service.concurrency]
+    type = "requests"
+    hard_limit = 50
+    soft_limit = 25
+
+[[vm]]
+  cpu_kind = "shared"
+  cpus = 1
+  memory_mb = 512
+
+[[mounts]]
+  source = "opencode_data"
+  destination = "/data"
+
+[metrics]
+  port = 9091
+  path = "/metrics"

@@ -10,3 +10,18 @@ node_modules
 **/.turbo
 **/.vite
 **/coverage
+# slim-fly: removed packages not needed for serve
+packages/app
+packages/web
+packages/desktop
+packages/ui
+packages/session-ui
+packages/console
+packages/stats
+packages/storybook
+packages/slack
+packages/enterprise
+packages/containers
+packages/function
+packages/cli
+packages/docs

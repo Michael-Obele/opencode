@@ -20,8 +20,8 @@ export type Patch = typeof Patch.Type
 export const FileDiff = Info
 export type FileDiff = typeof FileDiff.Type
 
-const prune = "7.days"
-const limit = 2 * 1024 * 1024
+const prune = "1.days"
+const limit = 512 * 1024
 const core = ["-c", "core.longpaths=true", "-c", "core.symlinks=true"]
 const cfg = ["-c", "core.autocrlf=false", ...core]
 const quote = [...cfg, "-c", "core.quotepath=false"]
