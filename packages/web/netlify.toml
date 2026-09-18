@@ -1,18 +1,18 @@
 [build]
-  command = "bun run build"
-  publish = "build"
+command = "bun run build"
+publish = "build"
 
 [build.environment]
-  NODE_VERSION = "22"
+NODE_VERSION = "22"
 
 [[headers]]
-  for = "/*"
-  [headers.values]
-    X-Frame-Options = "DENY"
-    X-Content-Type-Options = "nosniff"
+for = "/*"
+[headers.values]
+X-Frame-Options = "DENY"
+X-Content-Type-Options = "nosniff"
 
 [[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-  conditions = { Role = ["admin"] }
+from = "/*"
+to = "/index.html"
+status = 200
+conditions = { Role = ["admin"] }
