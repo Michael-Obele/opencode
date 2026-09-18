@@ -1,17 +1,31 @@
-app = "opencode-serve"
-primary_region = "iad"
+# Slim headless `opencode serve` on Fly.
+#
+# Reuses the existing `opencode-fly` app and its `opencode_data` volume. The
+# volume lives in `lhr`, so the machine must be pinned there too — a region
+# mismatch means the volume cannot attach.
+app = "opencode-fly"
+primary_region = "lhr"
 
 [build]
-  dockerfile = "packages/opencode/Dockerfile"
+  dockerfile = "Dockerfile"
 
 [env]
   PORT = "4096"
   OPENCODE_DISABLE_SHARE = "1"
   NODE_ENV = "production"
+  # Pin every XDG directory onto the mounted volume so sessions, config and the
+  # SQLite database survive suspend/resume instead of being lost with the
+  # container filesystem.
+  XDG_DATA_HOME = "/data/share"
+  XDG_CACHE_HOME = "/data/cache"
+  XDG_CONFIG_HOME = "/data/config"
+  XDG_STATE_HOME = "/data/state"
 
 [http_service]
   internal_port = 4096
   force_https = true
+  # Suspend (not stop) keeps memory resident for a fast resume; min_machines 0
+  # means no cost while idle.
   auto_stop_machines = "suspend"
   auto_start_machines = true
   min_machines_running = 0
@@ -30,7 +44,3 @@ primary_region = "iad"
 [[mounts]]
   source = "opencode_data"
   destination = "/data"
-
-[metrics]
-  port = 9091
-  path = "/metrics"
