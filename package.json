@@ -34,7 +34,8 @@
       "packages/script",
       "packages/sdk/js",
       "packages/sdk-next",
-      "packages/tui"
+      "packages/tui",
+      "packages/web"
     ],
     "catalog": {
       "@effect/opentelemetry": "4.0.0-beta.83",
