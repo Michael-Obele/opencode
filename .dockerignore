@@ -10,8 +10,11 @@ node_modules
 **/.turbo
 **/.vite
 **/coverage
+
 # Slim-fly: never shipped at runtime. These dominate the upload size — the test
+
 # suites alone are ~18MB, artifacts/ is ~8MB.
+
 artifacts
 sdks
 specs
@@ -19,10 +22,11 @@ perf
 **/test
 **/tests
 **/e2e
-**/*.test.ts
-**/*.spec.ts
-**/__snapshots__
-**/playwright.config.*
+**/_.test.ts
+\*\*/_.spec.ts
+**/**snapshots**
+**/playwright.config.\*
 
-# NOTE: tsconfig*.json files must NOT be excluded — Bun resolves the `@/` path
+# NOTE: tsconfig\*.json files must NOT be excluded — Bun resolves the `@/` path
+
 # aliases from them at runtime.
