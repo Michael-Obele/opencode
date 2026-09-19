@@ -211,7 +211,7 @@ export function Titlebar(props: { update?: TitlebarUpdate; debugTools?: { visibl
                 sdk.api.session
                   .get({ sessionID: route.sessionId })
                   .then(normalizeSessionInfo)
-                  .catch(() => {}),
+                  .catch(() => { }),
             )
 
             const matchRoute = (route: LayoutRoute) => {
@@ -288,9 +288,9 @@ export function Titlebar(props: { update?: TitlebarUpdate; debugTools?: { visibl
                 const conn = global.servers.list().find((item) => ServerConnection.key(item) === selection.server)
                 const project = conn
                   ? global
-                      .ensureServerCtx(conn)
-                      .projects.list()
-                      .find((item) => item.worktree === selection.directory)
+                    .ensureServerCtx(conn)
+                    .projects.list()
+                    .find((item) => item.worktree === selection.directory)
                   : undefined
                 if (conn && project) {
                   tabs.newDraft({ server: ServerConnection.key(conn), directory: project.worktree }, "")

@@ -26,9 +26,11 @@
 ### Mobile Polish — Approach A
 
 **Shared hook:**
+
 - New `src/hooks/use-is-desktop.ts` (or `src/utils/is-desktop.ts`): `export const useIsDesktop = () => createMediaQuery("(min-width:768px)")`. Replace 5 duplicated `createMediaQuery("(min-width:768px)")` in `pages/session.tsx`, `pages/session/session-side-panel.tsx`, `components/session/session-header.tsx`, `components/session-context-usage.tsx`, `pages/layout.tsx` (plus `max-width:767` in `titlebar.tsx`, `settings-v2/general.tsx` normalized to same hook).
 
 **Layout fixes:**
+
 - **Safe area + dvh:** `composer/session-composer-region.tsx` dock: add `padding-bottom: env(safe-area-inset-bottom)` and `min-height: 100dvh` fallback for iOS keyboard. `dockHeight = max(78, bodyHeight)` keep, but add `env(safe-area)` to `lift` calc.
 - **Touch targets:** Tabs `!h-9` (36px) → `min-h-11` (44px), titlebar `w-8 h-6` → `min-h-11 min-w-11`, `gap-1` → `gap-2` on mobile. File tree `FILE_TREE_WIDTH_MIN=240` → `min(240px, calc(100vw - 32px))` on mobile (via CSS, not constant).
 - **Drawer:** `pages/layout.tsx` mobile nav `max-w-[400px]` → `max-w-[calc(100vw-16px)]`, add `padding-bottom: env(safe-area-inset-bottom)`, `top-10` → `top-[var(--titlebar-height)]` (CSS var from `titlebar.tsx` `36px`/`40px`). Add swipe-to-close (touch `start`/`move` → `translateX` + `onClick` overlay already exists).
@@ -36,6 +38,7 @@
 - **Prompt input:** `prompt-input.tsx` toolbar `px-1.75 pt-5.5 pb-2` keep, but pills `max-w-[160px]` → `max-w-[min(160px,40vw)]` on mobile to avoid truncation.
 
 **Files touched (mobile):**
+
 - `src/hooks/use-is-desktop.ts` (new)
 - `src/pages/session.tsx` (isDesktop, mobileTabs, panelRow, centered, reviewTab)
 - `src/pages/session/composer/session-composer-region.tsx` (safe-area, dvh)
@@ -50,6 +53,7 @@
 ### GitHub MCP
 
 **Global (`~/.config/opencode/opencode.json`):**
+
 ```json
 "github": {
   "type": "local",
@@ -58,9 +62,11 @@
   "enabled": true
 }
 ```
+
 Alongside `sepia`, `sequentialthinking`, `svelte`, `shadcn-svelte`, `exa`, `firecrawl`, `docshark`, `playwright`, `cinder`, `better-auth`. Requires `GITHUB_PERSONAL_ACCESS_TOKEN` env (PAT with `repo` scope).
 
 **Repo (`.opencode/opencode.jsonc`):**
+
 ```json
 "mcp": {
   "github": {
@@ -71,6 +77,7 @@ Alongside `sepia`, `sequentialthinking`, `svelte`, `shadcn-svelte`, `exa`, `fire
   }
 }
 ```
+
 For Fly: `fly secrets set GITHUB_TOKEN=<pat>` (or `GITHUB_PERSONAL_ACCESS_TOKEN`). `Dockerfile` already copies `.opencode` (including `skills-global` merged via `cp -r .opencode/skills-global/* .opencode/skills/`).
 
 **Alternative considered:** Remote `https://api.githubcopilot.com/mcp/` — rejected, needs OAuth, local `npx` is simpler for Fly.
