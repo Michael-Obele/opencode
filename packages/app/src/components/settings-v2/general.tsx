@@ -1,5 +1,5 @@
 import { Component, Show, createMemo, createResource } from "solid-js"
-import { createMediaQuery } from "@solid-primitives/media"
+import { useIsMobile } from "@/hooks/use-is-desktop"
 import { ButtonV2 } from "@opencode-ai/ui/v2/button-v2"
 import { SelectV2 } from "@opencode-ai/ui/v2/select-v2"
 import { Switch } from "@opencode-ai/ui/v2/switch-v2"
@@ -270,7 +270,7 @@ export const SettingsGeneralV2: Component<{
   const platform = usePlatform()
   const dialog = useDialog()
   const settings = useSettings()
-  const mobile = createMediaQuery("(max-width: 767px)")
+  const mobile = useIsMobile()
   const updater = useUpdaterAction()
   const permissionScope = createPermissionScopeController(() => props.sessionID)
   const shell = createShellSettingsController()

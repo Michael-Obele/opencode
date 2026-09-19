@@ -20,8 +20,8 @@ import {
   untrack,
 } from "solid-js"
 import { makeEventListener } from "@solid-primitives/event-listener"
-import { createMediaQuery } from "@solid-primitives/media"
 import { createResizeObserver } from "@solid-primitives/resize-observer"
+import { useIsDesktop } from "@/hooks/use-is-desktop"
 import { debounce } from "@solid-primitives/scheduled"
 import { useLocal } from "@/context/local"
 import { FileProvider, selectionFromLines, useFile, type FileSelection, type SelectedLineRange } from "@/context/file"
@@ -439,7 +439,7 @@ export default function Page() {
     ),
   )
 
-  const isDesktop = createMediaQuery("(min-width: 768px)")
+  const isDesktop = useIsDesktop()
   const size = createSizing()
   const desktopReviewOpen = createMemo(() => isDesktop() && view().reviewPanel.opened())
   const desktopV2ReviewOpen = createMemo(() => newSessionDesign() && desktopReviewOpen() && !!params.id)
@@ -2004,7 +2004,7 @@ export default function Page() {
     <Tabs value={store.mobileTab} class="h-auto">
       <Tabs.List
         classList={{
-          "!h-9": compact,
+          "!min-h-11": compact,
           "[&::after]:!border-b-0 [&::after]:!border-t [&::after]:!border-border-weak-base": bottom,
         }}
       >
@@ -2014,7 +2014,7 @@ export default function Page() {
             "!w-1/2 !max-w-none": true,
             "!border-b-0 !border-t !border-border-weak-base [&:has([data-selected])]:!border-t-transparent": bottom,
           }}
-          classes={{ button: compact ? "w-full !py-2" : "w-full" }}
+          classes={{ button: compact ? "w-full !py-3 min-h-11" : "w-full min-h-11" }}
           onClick={() => setStore("mobileTab", "session")}
         >
           {language.t("session.tab.session")}
@@ -2025,7 +2025,7 @@ export default function Page() {
             "!w-1/2 !max-w-none !border-r-0": true,
             "!border-b-0 !border-t !border-border-weak-base [&:has([data-selected])]:!border-t-transparent": bottom,
           }}
-          classes={{ button: compact ? "w-full !py-2" : "w-full" }}
+          classes={{ button: compact ? "w-full !py-3 min-h-11" : "w-full min-h-11" }}
           onClick={() => setStore("mobileTab", "changes")}
         >
           {hasReview()
@@ -2057,12 +2057,12 @@ export default function Page() {
               {reviewContent({
                 diffStyle: "unified",
                 classes: {
-                  root: "pb-8 [&_[data-slot=session-review-list]]:pb-0",
-                  header: "px-4 !h-16 !pb-4",
-                  container: "px-4",
+                  root: "pb-[max(32px,env(safe-area-inset-bottom))] [&_[data-slot=session-review-list]]:pb-0",
+                  header: "px-3 sm:px-4 !h-16 !pb-4",
+                  container: "px-3 sm:px-4",
                 },
-                loadingClass: "px-4 py-4 text-text-weak",
-                emptyClass: "h-full pb-64 -mt-4 flex flex-col items-center justify-center text-center gap-6",
+                loadingClass: "px-3 sm:px-4 py-4 text-text-weak",
+                emptyClass: "h-full pb-32 sm:pb-64 -mt-4 flex flex-col items-center justify-center text-center gap-6 px-4",
               })}
             </div>
           </Match>

@@ -10,7 +10,7 @@ import { Tooltip, TooltipKeybind } from "@opencode-ai/ui/tooltip"
 import { getFilename } from "@opencode-ai/core/util/path"
 import { createEffect, createMemo, createSignal, For, onMount, Show } from "solid-js"
 import { createStore } from "solid-js/store"
-import { createMediaQuery } from "@solid-primitives/media"
+import { useIsDesktop } from "@/hooks/use-is-desktop"
 import { Portal } from "solid-js/web"
 import { useCommand } from "@/context/command"
 import { useLanguage } from "@/context/language"
@@ -161,7 +161,7 @@ export function SessionHeader() {
   const isV2 = settings.general.newLayoutDesigns
   const search = settings.visibility.search
   const status = settings.visibility.status
-  const isDesktop = createMediaQuery("(min-width: 768px)")
+  const isDesktop = useIsDesktop()
 
   const [exists, setExists] = createStore<Partial<Record<OpenApp, boolean>>>({
     finder: true,

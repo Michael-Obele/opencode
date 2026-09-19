@@ -2309,22 +2309,37 @@ export default function LegacyLayout(props: ParentProps) {
             <div class="xl:hidden">
               <div
                 classList={{
-                  "fixed inset-x-0 top-10 bottom-0 z-40 transition-opacity duration-200": true,
+                  "fixed inset-x-0 bottom-0 z-40 transition-opacity duration-200": true,
                   "opacity-100 pointer-events-auto": layout.mobileSidebar.opened(),
                   "opacity-0 pointer-events-none": !layout.mobileSidebar.opened(),
                 }}
+                style={{ top: "var(--titlebar-height, 40px)", "padding-bottom": "env(safe-area-inset-bottom)" }}
                 onClick={(e) => {
                   if (e.target === e.currentTarget) layout.mobileSidebar.hide()
+                }}
+                onTouchStart={(e) => {
+                  const x = e.touches[0]?.clientX ?? 0
+                  if (x < 24) (e.currentTarget as HTMLElement).dataset.swipe = "1"
+                }}
+                onTouchEnd={(e) => {
+                  const el = e.currentTarget as HTMLElement
+                  if (el.dataset.swipe) {
+                    delete el.dataset.swipe
+                    const dx = (e.changedTouches[0]?.clientX ?? 0) - 24
+                    if (dx < -40) layout.mobileSidebar.hide()
+                  }
                 }}
               />
               <nav
                 aria-label={language.t("sidebar.nav.projectsAndSessions")}
                 data-component="sidebar-nav-mobile"
                 classList={{
-                  "@container fixed top-10 bottom-0 start-0 z-50 w-full max-w-[400px] overflow-hidden border-e border-border-weaker-base bg-background-base transition-transform duration-200 ease-out": true,
+                  "@container fixed bottom-0 start-0 z-50 w-full overflow-hidden border-e border-border-weaker-base bg-background-base transition-transform duration-200 ease-out": true,
+                  "max-w-[calc(100vw-16px)]": true,
                   "translate-x-0": layout.mobileSidebar.opened(),
                   "ltr:-translate-x-full rtl:translate-x-full": !layout.mobileSidebar.opened(),
                 }}
+                style={{ top: "var(--titlebar-height, 40px)", "padding-bottom": "env(safe-area-inset-bottom)" }}
                 onClick={(e) => e.stopPropagation()}
               >
                 {sidebarContent(true)}

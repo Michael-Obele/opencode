@@ -4,7 +4,7 @@ import { ProgressCircleV2 } from "@opencode-ai/ui/v2/progress-circle-v2"
 import { Button } from "@opencode-ai/ui/button"
 import { IconButtonV2 } from "@opencode-ai/ui/v2/icon-button-v2"
 import { TooltipV2 } from "@opencode-ai/ui/v2/tooltip-v2"
-import { createMediaQuery } from "@solid-primitives/media"
+import { useIsDesktop } from "@/hooks/use-is-desktop"
 
 import { useFile } from "@/context/file"
 import { useLayout } from "@/context/layout"
@@ -52,7 +52,7 @@ export function SessionContextUsage(props: SessionContextUsageProps) {
   const settings = useSettings()
   const providers = useProviders(() => sdk().directory)
   const { params, tabs, view } = useSessionLayout()
-  const isDesktop = createMediaQuery("(min-width: 768px)")
+  const isDesktop = useIsDesktop()
 
   const variant = createMemo(() => props.variant ?? "button")
   const buttonAppearance = createMemo(() => props.buttonAppearance ?? "default")

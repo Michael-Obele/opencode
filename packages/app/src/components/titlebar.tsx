@@ -30,7 +30,7 @@ import { WindowsAppMenu } from "./windows-app-menu"
 import { applyPath, backPath, forwardPath } from "./titlebar-history"
 import { TitlebarTabStrip } from "@/components/titlebar-tab-strip"
 import { makeEventListener } from "@solid-primitives/event-listener"
-import { createMediaQuery } from "@solid-primitives/media"
+import { useIsMobile } from "@/hooks/use-is-desktop"
 import { readSessionTabsRemovedDetail, SESSION_TABS_REMOVED_EVENT } from "@/components/titlebar-session-events"
 import { useGlobal } from "@/context/global"
 import { ServerConnection, useServer } from "@/context/server"
@@ -72,7 +72,7 @@ export function Titlebar(props: { update?: TitlebarUpdate; debugTools?: { visibl
   const location = useLocation()
   const params = useParams()
   const useV2Titlebar = createMemo(() => settings.general.newLayoutDesigns())
-  const mobile = createMediaQuery("(max-width: 767px)")
+  const mobile = useIsMobile()
   const bottom = createMemo(() => useV2Titlebar() && mobile() && settings.general.mobileTitlebarPosition() === "bottom")
 
   const mac = createMemo(() => platform.platform === "desktop" && platform.os === "macos")
@@ -179,6 +179,7 @@ export function Titlebar(props: { update?: TitlebarUpdate; debugTools?: { visibl
       }}
       style={{
         "min-height": minHeight(),
+        "--titlebar-height": useV2Titlebar() ? `${v2TitlebarHeight}px` : `${legacyTitlebarHeight}px`,
         // Keep native macOS traffic lights clear even when the desktop window is narrow.
         "padding-left": macTrafficLights() ? `${macTrafficLightsBaseWidth / zoom()}px` : 0,
         width: windows() ? `env(titlebar-area-width, calc(100vw - ${windowsControlsWidth()}))` : undefined,
@@ -450,11 +451,11 @@ export function Titlebar(props: { update?: TitlebarUpdate; debugTools?: { visibl
                 <WindowsAppMenu command={command} platform={platform} />
               </Show>
               <Show when={mac()}>
-                <div class="xl:hidden w-10 shrink-0 flex items-center justify-center">
+                <div class="xl:hidden w-11 shrink-0 flex items-center justify-center">
                   <IconButton
                     icon="menu"
                     variant="ghost"
-                    class="titlebar-icon rounded-md"
+                    class="titlebar-icon rounded-md min-h-11 min-w-11"
                     onClick={layout.mobileSidebar.toggle}
                     aria-label={language.t("sidebar.menu.toggle")}
                     aria-expanded={layout.mobileSidebar.opened()}
@@ -462,11 +463,11 @@ export function Titlebar(props: { update?: TitlebarUpdate; debugTools?: { visibl
                 </div>
               </Show>
               <Show when={!mac()}>
-                <div class="xl:hidden w-[48px] shrink-0 flex items-center justify-center">
+                <div class="xl:hidden w-11 shrink-0 flex items-center justify-center">
                   <IconButton
                     icon="menu"
                     variant="ghost"
-                    class="titlebar-icon rounded-md"
+                    class="titlebar-icon rounded-md min-h-11 min-w-11"
                     onClick={layout.mobileSidebar.toggle}
                     aria-label={language.t("sidebar.menu.toggle")}
                     aria-expanded={layout.mobileSidebar.opened()}
