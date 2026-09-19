@@ -11,9 +11,6 @@ import {
   sansDefault,
   sansFontFamily,
   sansInput,
-  terminalDefault,
-  terminalFontFamily,
-  terminalInput,
   useSettings,
 } from "@/context/settings"
 import { playSoundById, SOUND_OPTIONS } from "@/utils/sound"
@@ -100,14 +97,8 @@ export function createAppearanceSettingsController() {
         family: monoFontFamily(settings.appearance.font()),
         placeholder: monoDefault,
       })),
-      terminal: createMemo(() => ({
-        value: terminalInput(settings.appearance.terminalFont()),
-        family: terminalFontFamily(settings.appearance.terminalFont()),
-        placeholder: terminalDefault,
-      })),
       setUI: (value: string) => settings.appearance.setUIFont(value),
       setCode: (value: string) => settings.appearance.setFont(value),
-      setTerminal: (value: string) => settings.appearance.setTerminalFont(value),
     },
   }
 }

@@ -1,5 +1,4 @@
 import "@/index.css"
-import * as Sentry from "@sentry/solid"
 import { I18nProvider } from "@opencode-ai/ui/context"
 import { DialogProvider } from "@opencode-ai/ui/context/dialog"
 import { FileComponentProvider } from "@opencode-ai/ui/context/file"
@@ -56,7 +55,6 @@ import { ServerConnection, ServerProvider, serverName, useServer } from "@/conte
 import { SettingsProvider, useSettings } from "@/context/settings"
 import { TabsProvider, useTabs, type DraftTab } from "@/context/tabs"
 import { SDKProvider, useSDK } from "@/context/sdk"
-import { WslServersProvider } from "@/wsl/context"
 import DirectoryLayout, { DirectoryDataProvider } from "@/pages/directory-layout"
 import LegacyLayout from "@/pages/layout"
 import NewLayout from "@/pages/layout-new"
@@ -406,18 +404,11 @@ export function AppBaseProviders(
       >
         <LanguageProvider locale={props.locale} onNativeTranslations={props.onNativeTranslations}>
           <UiI18nBridge>
-            <ErrorBoundary
-              fallback={(error) => {
-                Sentry.captureException(error)
-                return <ErrorPage error={error} />
-              }}
-            >
+            <ErrorBoundary fallback={(error) => <ErrorPage error={error} />}>
               <QueryProvider>
-                <WslServersProvider>
-                  <DialogProvider>
-                    <FileComponentProvider component={File}>{props.children}</FileComponentProvider>
-                  </DialogProvider>
-                </WslServersProvider>
+                <DialogProvider>
+                  <FileComponentProvider component={File}>{props.children}</FileComponentProvider>
+                </DialogProvider>
               </QueryProvider>
             </ErrorBoundary>
           </UiI18nBridge>

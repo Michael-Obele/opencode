@@ -19,8 +19,6 @@ import { usePlatform } from "@/context/platform"
 import { useServer } from "@/context/server"
 import { useSettings } from "@/context/settings"
 import { useSync } from "@/context/sync"
-import { useTerminal } from "@/context/terminal"
-import { focusTerminalById } from "@/pages/session/helpers"
 import { useSessionLayout } from "@/pages/session/session-layout"
 import { messageAgentColor } from "@/utils/agent"
 import { decode64 } from "@/utils/base64"
@@ -145,7 +143,6 @@ export function SessionHeader() {
   const language = useLanguage()
   const settings = useSettings()
   const sync = useSync()
-  const terminal = useTerminal()
   const { params, view } = useSessionLayout()
 
   const projectDirectory = createMemo(() => decode64(params.dir) ?? "")
@@ -206,16 +203,6 @@ export function SessionHeader() {
         .map((app) => ({ ...app, label: language.t(app.label) })),
     ] as const
   })
-
-  const toggleTerminal = () => {
-    const next = !view().terminal.opened()
-    view().terminal.toggle()
-    if (!next) return
-
-    const id = terminal.active()
-    if (!id) return
-    focusTerminalById(id)
-  }
 
   const [prefs, setPrefs] = persisted(Persist.global("open.app"), createStore({ app: "finder" as OpenApp }))
   const [menu, setMenu] = createStore({ open: false })
@@ -445,22 +432,6 @@ export function SessionHeader() {
                         <StatusPopover />
                       </Tooltip>
                     </Show>
-                    <TooltipKeybind
-                      title={language.t("command.terminal.toggle")}
-                      keybind={command.keybind("terminal.toggle")}
-                    >
-                      <Button
-                        variant="ghost"
-                        class="group/terminal-toggle titlebar-icon w-8 h-6 p-0 box-border shrink-0"
-                        onClick={toggleTerminal}
-                        aria-label={language.t("command.terminal.toggle")}
-                        aria-expanded={view().terminal.opened()}
-                        aria-controls="terminal-panel"
-                      >
-                        <Icon size="small" name={view().terminal.opened() ? "terminal-active" : "terminal"} />
-                      </Button>
-                    </TooltipKeybind>
-
                     <div class="hidden md:flex items-center gap-1 shrink-0">
                       <TooltipKeybind
                         title={language.t("command.review.toggle")}

@@ -21,7 +21,7 @@ const IconV2 = lazy(() => import("@opencode-ai/ui/v2/icon").then((module) => ({ 
 const IS_MAC = typeof navigator === "object" && /(Mac|iPod|iPhone|iPad)/.test(navigator.platform)
 const PALETTE_ID = "command.palette"
 
-type KeybindGroup = "General" | "Session" | "Navigation" | "Model and agent" | "Terminal" | "Prompt"
+type KeybindGroup = "General" | "Session" | "Navigation" | "Model and agent" | "Prompt"
 
 type KeybindMeta = {
   title: string
@@ -33,14 +33,13 @@ type CommandContext = ReturnType<typeof useCommand>
 type LanguageContext = ReturnType<typeof useLanguage>
 type SettingsContext = ReturnType<typeof useSettings>
 
-const GROUPS: KeybindGroup[] = ["General", "Session", "Navigation", "Model and agent", "Terminal", "Prompt"]
+const GROUPS: KeybindGroup[] = ["General", "Session", "Navigation", "Model and agent", "Prompt"]
 
 type GroupKey =
   | "settings.shortcuts.group.general"
   | "settings.shortcuts.group.session"
   | "settings.shortcuts.group.navigation"
   | "settings.shortcuts.group.modelAndAgent"
-  | "settings.shortcuts.group.terminal"
   | "settings.shortcuts.group.prompt"
 
 const groupKey: Record<KeybindGroup, GroupKey> = {
@@ -48,13 +47,11 @@ const groupKey: Record<KeybindGroup, GroupKey> = {
   Session: "settings.shortcuts.group.session",
   Navigation: "settings.shortcuts.group.navigation",
   "Model and agent": "settings.shortcuts.group.modelAndAgent",
-  Terminal: "settings.shortcuts.group.terminal",
   Prompt: "settings.shortcuts.group.prompt",
 }
 
 function groupFor(id: string): KeybindGroup {
   if (id === PALETTE_ID) return "General"
-  if (id.startsWith("terminal.")) return "Terminal"
   if (id.startsWith("model.") || id.startsWith("agent.") || id.startsWith("mcp.")) return "Model and agent"
   if (id.startsWith("file.") || id.startsWith("fileTree.")) return "Navigation"
   if (id.startsWith("prompt.")) return "Prompt"

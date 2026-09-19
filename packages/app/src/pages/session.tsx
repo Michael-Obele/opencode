@@ -57,7 +57,6 @@ import { ServerConnection, serverName, useServer } from "@/context/server"
 import { useSettings } from "@/context/settings"
 import { useSync } from "@/context/sync"
 import { useTabs } from "@/context/tabs"
-import { TerminalProvider, useTerminal } from "@/context/terminal"
 import { PromptInput } from "@/components/prompt-input"
 import { PromptInputV2Composer, usePromptInputV2Controller } from "@/components/prompt-input-v2"
 import { useSettingsCommand } from "@/components/settings-dialog"
@@ -89,8 +88,6 @@ import { SessionReviewV2SidebarToggle } from "@opencode-ai/session-ui/v2/session
 import { ReviewPanelV2 } from "@/pages/session/v2/review-panel-v2"
 import { createReviewPanelV2State } from "@/pages/session/v2/review-panel-v2-state"
 import { reviewDiffDirectory, reviewDiffNeedsLoad, reviewRootDirectory } from "@/pages/session/v2/review-diff-kinds"
-import { TerminalPanel } from "@/pages/session/terminal-panel"
-import { TerminalPanelV2 } from "@/pages/session/terminal-panel-v2"
 import { useComposerCommands } from "@/pages/session/use-composer-commands"
 import { useSessionCommands } from "@/pages/session/use-session-commands"
 import { useSessionHashScroll } from "@/pages/session/use-session-hash-scroll"
@@ -316,13 +313,11 @@ function MarkSessionNotificationsViewed(props: { sessionID?: () => string | unde
 
 function SessionProviders(props: ParentProps) {
   return (
-    <TerminalProvider>
-      <FileProvider>
-        <PromptProvider>
-          <CommentsProvider>{props.children}</CommentsProvider>
-        </PromptProvider>
-      </FileProvider>
-    </TerminalProvider>
+    <FileProvider>
+      <PromptProvider>
+        <CommentsProvider>{props.children}</CommentsProvider>
+      </PromptProvider>
+    </FileProvider>
   )
 }
 
@@ -366,7 +361,6 @@ export default function Page() {
   const prompt = usePrompt()
   const comments = useComments()
   const command = useCommand()
-  const terminal = useTerminal()
   const [searchParams, setSearchParams] = useSearchParams<{ prompt?: string }>()
   const location = useLocation()
   const navigate = useNavigate()
@@ -449,11 +443,6 @@ export default function Page() {
   const size = createSizing()
   const desktopReviewOpen = createMemo(() => isDesktop() && view().reviewPanel.opened())
   const desktopV2ReviewOpen = createMemo(() => newSessionDesign() && desktopReviewOpen() && !!params.id)
-  const terminalOpen = createMemo(() => view().terminal.opened())
-  const desktopTerminalOpen = createMemo(() => isDesktop() && terminalOpen())
-  const desktopInlineTerminalOnlyOpen = createMemo(
-    () => newSessionDesign() && desktopTerminalOpen() && !desktopV2ReviewOpen(),
-  )
   const desktopFileTreeOpen = createMemo(
     () =>
       isDesktop() &&
@@ -462,9 +451,7 @@ export default function Page() {
         opened: layout.fileTree.opened(),
       }),
   )
-  const desktopSessionResizeOpen = createMemo(() =>
-    newSessionDesign() ? desktopV2ReviewOpen() || desktopTerminalOpen() : desktopReviewOpen(),
-  )
+  const desktopSessionResizeOpen = createMemo(() => desktopV2ReviewOpen() || desktopReviewOpen())
   const desktopSidePanelOpen = createMemo(() => desktopSessionResizeOpen() || desktopFileTreeOpen())
   let panelRow: HTMLDivElement | undefined
   const [panelRowWidth, setPanelRowWidth] = createSignal<number>()
@@ -505,7 +492,6 @@ export default function Page() {
   const desktopV2PanelLayout = createMemo(() =>
     sessionPanelLayout({
       review: desktopV2ReviewOpen(),
-      terminal: desktopTerminalOpen(),
       files: desktopFileTreeOpen(),
     }),
   )
@@ -2262,7 +2248,7 @@ export default function Page() {
           classList={{
             "@container relative shrink-0 flex flex-col min-h-0 h-full flex-1 md:flex-none transition-[width]": true,
             "duration-[240ms] ease-[cubic-bezier(0.22,1,0.36,1)] will-change-[width] motion-reduce:transition-none":
-              !size.active() && !ui.reviewSnap && !desktopInlineTerminalOnlyOpen(),
+              !size.active() && !ui.reviewSnap,
           }}
           style={{
             width: sessionPanelWidth(),
@@ -2320,7 +2306,7 @@ export default function Page() {
           </Suspense>
         </Show>
         <Show when={newSessionDesign()}>
-          <Show when={isDesktop() ? desktopV2PanelLayout().visible : terminalOpen()}>
+          <Show when={isDesktop() ? desktopV2PanelLayout().visible : false}>
             <div class="min-w-0 h-full flex flex-1 flex-col">
               <Show when={isDesktop() && (desktopV2ReviewOpen() || desktopFileTreeOpen())}>
                 <div class="min-h-0 flex-1">
@@ -2351,41 +2337,10 @@ export default function Page() {
                   </Suspense>
                 </div>
               </Show>
-              <Show when={desktopV2PanelLayout().stacked}>
-                <div class="relative h-2 shrink-0" onPointerDown={() => size.start()}>
-                  <ResizeHandle
-                    class="!relative !inset-auto !h-full !w-full !transform-none"
-                    direction="vertical"
-                    size={layout.terminal.height()}
-                    min={100}
-                    max={typeof window === "undefined" ? 600 : window.innerHeight * 0.6}
-                    collapseThreshold={50}
-                    onResize={(height) => {
-                      size.touch()
-                      layout.terminal.resize(height)
-                    }}
-                    onCollapse={() => view().terminal.close()}
-                  />
-                </div>
-              </Show>
-              <Show when={terminalOpen()}>
-                <div
-                  classList={{
-                    "min-h-0 shrink-0": desktopV2PanelLayout().stacked,
-                    "min-h-0 flex-1": !desktopV2PanelLayout().stacked,
-                  }}
-                >
-                  <TerminalPanelV2 stacked={desktopV2PanelLayout().stacked} />
-                </div>
-              </Show>
             </div>
           </Show>
         </Show>
       </div>
-
-      <Show when={!newSessionDesign()}>
-        <TerminalPanel />
-      </Show>
     </SessionRouteFrame>
   )
 }

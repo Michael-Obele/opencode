@@ -13,7 +13,6 @@ import { ServerConnection, serverName } from "@/context/server"
 import { useServerManagementController } from "../dialog-select-server"
 import { DialogServerV2 } from "./dialog-server-v2"
 import { SettingsListV2 } from "./parts/list"
-import { AddServerMenu, isWslServer, useFilteredWslServers, WslServerSettings } from "@/wsl/settings"
 import "./settings-v2.css"
 
 export const SettingsServersV2: Component = () => {
@@ -21,14 +20,11 @@ export const SettingsServersV2: Component = () => {
   const language = useLanguage()
   const controller = useServerManagementController()
   const [store, setStore] = createStore({ filter: "" })
-  const wslServers = useFilteredWslServers(() => store.filter)
 
-  const showSearch = createMemo(
-    () => controller.sortedItems().filter((item) => !isWslServer(item)).length + wslServers().length > 1,
-  )
+  const showSearch = createMemo(() => controller.sortedItems().length > 1)
 
   const filtered = createMemo(() => {
-    const items = controller.sortedItems().filter((item) => !isWslServer(item))
+    const items = controller.sortedItems()
     const query = store.filter.trim()
     if (!query) return items
     return fuzzysort
@@ -54,7 +50,9 @@ export const SettingsServersV2: Component = () => {
       >
         <div class="settings-v2-tab-header-row">
           <h2 class="settings-v2-tab-title">{language.t("status.popover.tab.servers")}</h2>
-          <AddServerMenu onAddServer={openAdd} />
+          <button type="button" class="v2-button" onClick={openAdd}>
+            {language.t("dialog.server.add.button")}
+          </button>
         </div>
         <Show when={showSearch()}>
           <div class="settings-v2-tab-search">
@@ -86,7 +84,7 @@ export const SettingsServersV2: Component = () => {
 
       <div class="settings-v2-tab-body settings-v2-servers">
         <Show
-          when={filtered().length > 0 || wslServers().length > 0}
+          when={filtered().length > 0}
           fallback={
             <div class="settings-v2-servers-status">
               <span>{store.filter ? language.t("palette.empty") : language.t("dialog.server.empty")}</span>
@@ -97,7 +95,6 @@ export const SettingsServersV2: Component = () => {
           }
         >
           <SettingsListV2>
-            <WslServerSettings controller={controller} servers={wslServers} />
             <For each={filtered()}>
               {(item) => {
                 const key = ServerConnection.key(item)

@@ -18,23 +18,8 @@
   },
   "workspaces": {
     "packages": [
-      "packages/opencode",
-      "packages/server",
-      "packages/core",
-      "packages/protocol",
-      "packages/schema",
-      "packages/llm",
-      "packages/plugin",
-      "packages/client",
-      "packages/codemode",
-      "packages/effect-drizzle-sqlite",
-      "packages/effect-sqlite-node",
-      "packages/http-recorder",
-      "packages/httpapi-codegen",
-      "packages/script",
+      "packages/*",
       "packages/sdk/js",
-      "packages/sdk-next",
-      "packages/tui",
       "packages/web"
     ],
     "catalog": {

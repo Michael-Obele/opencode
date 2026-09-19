@@ -43,13 +43,6 @@ const fontSettings = {
     font: "code",
     input: "setCode",
   },
-  terminal: {
-    action: "settings-terminal-font",
-    title: "settings.general.row.terminalFont.title",
-    description: "settings.general.row.terminalFont.description",
-    font: "terminal",
-    input: "setTerminal",
-  },
 } as const
 const soundSettings = {
   agent: {
@@ -171,14 +164,13 @@ const AppearanceSection: Component<{ controller: AppearanceSettingsController }>
 
         <FontSetting kind="ui" fonts={props.controller.fonts} />
         <FontSetting kind="code" fonts={props.controller.fonts} />
-        <FontSetting kind="terminal" fonts={props.controller.fonts} />
       </SettingsListV2>
     </div>
   )
 }
 
 const FontSetting: Component<{
-  kind: "ui" | "code" | "terminal"
+  kind: "ui" | "code"
   fonts: AppearanceSettingsController["fonts"]
 }> = (props) => {
   const language = useLanguage()

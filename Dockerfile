@@ -1,32 +1,15 @@
-# Slim Fly.io image for headless `opencode serve`.
+# Slim Fly.io image for headless `opencode serve` with embedded Solid app.
 #
-# Runs from source rather than shipping a pre-compiled binary: `dist/` is
-# gitignored and building it locally would mean a full `bun install` on the
-# workstation. Here the entire install happens on Fly's remote builder, so a
-# deploy never downloads packages locally — only the (trimmed) build context is
-# uploaded. See .dockerignore for the exclusions that keep that context small.
-FROM oven/bun:1-slim
-
-# Husky has no .git directory inside the image, and the runtime transpiler cache
-# is pointless on an ephemeral container.
-ENV HUSKY=0 \
-    BUN_RUNTIME_TRANSPILER_CACHE_PATH=0 \
-    NODE_ENV=production
-
+# Multi-stage: builder compiles the app (no sourcemaps, en-only) and installs
+# deps; runtime copies only the needed artifacts. Keeps the image small enough
+# for the 512MB Fly VM and avoids shipping test/assets bloat.
+FROM oven/bun:1-slim AS builder
+ENV HUSKY=0 BUN_RUNTIME_TRANSPILER_CACHE_PATH=0 NODE_ENV=production
 WORKDIR /app
-
-# Workspace manifests and lockfile first. Bun validates the whole workspace
-# graph against the lockfile, so every member's package.json must be present
-# before install; copying only manifests here also caches the dependency layer
-# across deploys.
 COPY package.json bun.lock ./
-# patchedDependencies in the root manifest point at these files, and Bun needs
-# them while resolving — so they must land before the install, not with the
-# bulk source copy below.
 COPY patches ./patches
-# The root `postinstall` runs `bun run --cwd packages/core fix-node-pty`, so that
-# script has to exist before the install too.
 COPY packages/core/script packages/core/script
+COPY packages/app/package.json packages/app/
 COPY packages/client/package.json packages/client/
 COPY packages/codemode/package.json packages/codemode/
 COPY packages/core/package.json packages/core/
@@ -43,15 +26,23 @@ COPY packages/script/package.json packages/script/
 COPY packages/sdk/js/package.json packages/sdk/js/
 COPY packages/sdk-next/package.json packages/sdk-next/
 COPY packages/server/package.json packages/server/
+COPY packages/session-ui/package.json packages/session-ui/
 COPY packages/tui/package.json packages/tui/
-
-# Deliberately not --frozen-lockfile: the slimmed workspace list diverges from
-# the upstream lockfile, and re-resolving here costs no local bandwidth.
+COPY packages/ui/package.json packages/ui/
 RUN bun install
-
 COPY . .
+# Build the Solid app with no sourcemaps (vite.config.ts already disables them)
+# and embed it into the opencode binary via opencode-web-ui.gen.ts
+RUN bun run --cwd packages/app build
 
+FROM oven/bun:1-slim
+ENV HUSKY=0 BUN_RUNTIME_TRANSPILER_CACHE_PATH=0 NODE_ENV=production
+WORKDIR /app
+COPY --from=builder /app/package.json /app/bun.lock ./
+COPY --from=builder /app/patches ./patches
+COPY --from=builder /app/packages ./packages
+COPY --from=builder /app/node_modules ./node_modules
+# Ensure the built app dist is present for the embedded UI
+COPY --from=builder /app/packages/app/dist ./packages/app/dist
 EXPOSE 4096
-
-# `serve` defaults to 127.0.0.1:0, which is unreachable from Fly's proxy.
 CMD ["bun", "run", "packages/opencode/src/index.ts", "serve", "--hostname", "0.0.0.0", "--port", "4096"]

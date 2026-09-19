@@ -27,6 +27,16 @@ perf
 **/**snapshots**
 **/playwright.config.\*
 
+# Fly slim: keep the embedded app dist, but don't upload local node_modules/dist
+!packages/app/dist
+
+# Never ship web (SvelteKit) or heavy dev artifacts on Fly — app is the embedded UI
+packages/web
+packages/tui
+packages/desktop
+packages/console
+packages/storybook
+
 # NOTE: tsconfig\*.json files must NOT be excluded — Bun resolves the `@/` path
 
 # aliases from them at runtime.

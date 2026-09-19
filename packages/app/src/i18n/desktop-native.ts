@@ -1,224 +1,21 @@
-export const DESKTOP_NATIVE_LOCALES = [
-  "en",
-  "zh",
-  "zht",
-  "ko",
-  "de",
-  "es",
-  "fr",
-  "da",
-  "ja",
-  "pl",
-  "ru",
-  "uk",
-  "bs",
-  "ar",
-  "no",
-  "br",
-  "th",
-  "tr",
-  "hi",
-  "nl",
-  "id",
-  "vi",
-  "it",
-  "ur",
-  "pa",
-  "az",
-  "fi",
-  "sv",
-  "am",
-  "bg",
-  "bn",
-  "ca",
-  "cs",
-  "dv",
-  "dz",
-  "el",
-  "et",
-  "fa",
-  "fo",
-  "hr",
-  "hu",
-  "hy",
-  "is",
-  "ka",
-  "km",
-  "lo",
-  "lt",
-  "lv",
-  "mk",
-  "mn",
-  "ms",
-  "my",
-  "ne",
-  "ro",
-  "si",
-  "sk",
-  "sl",
-  "sq",
-  "sr",
-  "tg",
-  "tk",
-  "uz",
-] as const
+export const DESKTOP_NATIVE_LOCALES = ["en"] as const
 
 export type DesktopNativeLocale = (typeof DESKTOP_NATIVE_LOCALES)[number]
 
 export const DESKTOP_NATIVE_LABELS: Record<DesktopNativeLocale, string> = {
   en: "English",
-  zh: "简体中文",
-  zht: "繁體中文",
-  ko: "한국어",
-  de: "Deutsch",
-  es: "Español",
-  fr: "Français",
-  da: "Dansk",
-  ja: "日本語",
-  pl: "Polski",
-  ru: "Русский",
-  uk: "Українська",
-  bs: "Bosanski",
-  ar: "العربية",
-  no: "Norsk",
-  br: "Português (Brasil)",
-  th: "ไทย",
-  tr: "Türkçe",
-  hi: "हिन्दी",
-  nl: "Nederlands",
-  id: "Bahasa Indonesia",
-  vi: "Tiếng Việt",
-  it: "Italiano",
-  ur: "اردو",
-  pa: "پنجابی",
-  az: "Azərbaycanca",
-  fi: "Suomi",
-  sv: "Svenska",
-  am: "አማርኛ",
-  bg: "Български",
-  bn: "বাংলা",
-  ca: "Català",
-  cs: "Čeština",
-  dv: "ދިވެހި",
-  dz: "རྫོང་ཁ",
-  el: "Ελληνικά",
-  et: "Eesti",
-  fa: "فارسی",
-  fo: "Føroyskt",
-  hr: "Hrvatski",
-  hu: "Magyar",
-  hy: "Հայերեն",
-  is: "Íslenska",
-  ka: "ქართული",
-  km: "ខ្មែរ",
-  lo: "ລາວ",
-  lt: "Lietuvių",
-  lv: "Latviešu",
-  mk: "Македонски",
-  mn: "Монгол",
-  ms: "Bahasa Melayu",
-  my: "မြန်မာ",
-  ne: "नेपाली",
-  ro: "Română",
-  si: "සිංහල",
-  sk: "Slovenčina",
-  sl: "Slovenščina",
-  sq: "Shqip",
-  sr: "Српски",
-  tg: "Тоҷикӣ",
-  tk: "Türkmençe",
-  uz: "Oʻzbekcha",
 }
 
 export const DESKTOP_NATIVE_LOCALE_TAGS: Record<DesktopNativeLocale, string> = {
   en: "en",
-  zh: "zh-Hans",
-  zht: "zh-Hant",
-  ko: "ko",
-  de: "de",
-  es: "es",
-  fr: "fr",
-  da: "da",
-  ja: "ja",
-  pl: "pl",
-  ru: "ru",
-  uk: "uk",
-  bs: "bs",
-  ar: "ar",
-  no: "nb-NO",
-  br: "pt-BR",
-  th: "th",
-  tr: "tr",
-  hi: "hi-IN",
-  nl: "nl-NL",
-  id: "id-ID",
-  vi: "vi-VN",
-  it: "it-IT",
-  ur: "ur-PK",
-  pa: "pa-Arab-PK",
-  az: "az-Latn-AZ",
-  fi: "fi-FI",
-  sv: "sv-SE",
-  am: "am-ET",
-  bg: "bg-BG",
-  bn: "bn-BD",
-  ca: "ca-AD",
-  cs: "cs-CZ",
-  dv: "dv-MV",
-  dz: "dz-BT",
-  el: "el-GR",
-  et: "et-EE",
-  fa: "fa-IR",
-  fo: "fo-FO",
-  hr: "hr-HR",
-  hu: "hu-HU",
-  hy: "hy-AM",
-  is: "is-IS",
-  ka: "ka-GE",
-  km: "km-KH",
-  lo: "lo-LA",
-  lt: "lt-LT",
-  lv: "lv-LV",
-  mk: "mk-MK",
-  mn: "mn-MN",
-  ms: "ms-MY",
-  my: "my-MM",
-  ne: "ne-NP",
-  ro: "ro-RO",
-  si: "si-LK",
-  sk: "sk-SK",
-  sl: "sl-SI",
-  sq: "sq-AL",
-  sr: "sr-Cyrl-RS",
-  tg: "tg-Cyrl-TJ",
-  tk: "tk-Latn-TM",
-  uz: "uz-Latn-UZ",
 }
 
-export function detectDesktopNativeLocale(languages: readonly string[]): DesktopNativeLocale {
-  for (const language of languages) {
-    const source = locale(language)
-    if (!source) continue
-    if (["no", "nb", "nn"].includes(source.language)) return "no"
-    const match = DESKTOP_NATIVE_LOCALES.find((candidate) => {
-      const target = locale(DESKTOP_NATIVE_LOCALE_TAGS[candidate])
-      return target?.language === source.language && target.script === source.script
-    })
-    if (match) return match
-  }
+export function detectDesktopNativeLocale(_languages: readonly string[]): DesktopNativeLocale {
   return "en"
 }
 
-export function desktopNativePluralCategories(locale: DesktopNativeLocale) {
-  return new Intl.PluralRules(DESKTOP_NATIVE_LOCALE_TAGS[locale]).resolvedOptions().pluralCategories
-}
-
-function locale(value: string) {
-  try {
-    return new Intl.Locale(value).maximize()
-  } catch {
-    return undefined
-  }
+export function desktopNativePluralCategories(_locale: DesktopNativeLocale) {
+  return new Intl.PluralRules("en").resolvedOptions().pluralCategories
 }
 
 export const DESKTOP_NATIVE_ENGLISH = {
@@ -267,7 +64,6 @@ export const DESKTOP_NATIVE_ENGLISH = {
   "desktop.menu.shareFeedback": "Share Feedback",
   "desktop.menu.reportBug": "Report a Bug",
   "desktop.menu.ariaLabel": "OpenCode menu",
-
   "desktop.updater.dialog.checkFailed.message": "Update check failed.",
   "desktop.updater.dialog.checkFailed.title": "Update Error",
   "desktop.updater.dialog.upToDate.message": "You're up to date.",
@@ -276,7 +72,6 @@ export const DESKTOP_NATIVE_ENGLISH = {
   "desktop.updater.dialog.ready.title": "Update Ready",
   "desktop.updater.dialog.restart": "Restart",
   "desktop.updater.dialog.later": "Later",
-
   "desktop.recovery.action.relaunch": "Relaunch",
   "desktop.recovery.action.exportLogs": "Export Logs",
   "desktop.recovery.action.keepWaiting": "Keep Waiting",
@@ -288,13 +83,11 @@ export const DESKTOP_NATIVE_ENGLISH = {
   "desktop.recovery.loadFailed.detail": "Window: {{window}}\nURL: {{url}}\nError: {{code}} {{description}}",
   "desktop.recovery.terminated.detail": "Window: {{window}}\nReason: {{reason}}\nCode: {{code}}",
   "desktop.recovery.unknown": "<unknown>",
-
   "desktop.dialog.chooseFolder": "Choose a folder",
   "desktop.dialog.chooseFile": "Choose a file",
   "desktop.dialog.saveFile": "Save file",
   "desktop.dialog.files": "Files",
   "desktop.server.local": "Local Server",
-
   "desktop.wsl.error.windowsOnly": "WSL is only available on Windows",
   "desktop.wsl.error.unavailable": "WSL is unavailable",
   "desktop.wsl.error.listInstalled": "Failed to list installed WSL distros",
@@ -307,16 +100,13 @@ export const DESKTOP_NATIVE_ENGLISH = {
   "desktop.wsl.error.opencodeMissing": "opencode is not installed in this distro",
   "desktop.wsl.error.opencodeCannotRun": "opencode is installed but could not run",
   "desktop.wsl.error.opencodeNotInstalled": "OpenCode is not installed in {{distro}}",
-  "desktop.wsl.error.updateVersion":
-    "OpenCode update finished but {{distro}} still reports {{installed}}; expected {{expected}}",
+  "desktop.wsl.error.updateVersion": "OpenCode update finished but {{distro}} still reports {{installed}}; expected {{expected}}",
   "desktop.wsl.error.noVersion": "no version",
   "desktop.wsl.error.serverExited": "WSL server exited after startup (code={{code}} signal={{signal}})",
-  "desktop.wsl.error.serverExitedBeforeHealthy":
-    "WSL server exited before becoming healthy (code={{code}} signal={{signal}}){{output}}",
+  "desktop.wsl.error.serverExitedBeforeHealthy": "WSL server exited before becoming healthy (code={{code}} signal={{signal}}){{output}}",
   "desktop.wsl.error.healthTimeout": "Sidecar for {{distro}} health check timed out after {{timeout}}ms",
   "desktop.wsl.error.commandTimeout": "{{command}} {{args}} timed out after {{timeout}}ms",
   "desktop.wsl.error.failedPort": "Failed to get port",
-
   "desktop.picker.error.notSelected": "File was not selected by the picker",
   "desktop.picker.error.sizeLimit": "Selected attachments exceed the {{limit}} MB limit",
 } as const

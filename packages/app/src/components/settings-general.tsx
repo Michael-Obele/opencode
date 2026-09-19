@@ -22,9 +22,6 @@ import {
   sansDefault,
   sansFontFamily,
   sansInput,
-  terminalDefault,
-  terminalFontFamily,
-  terminalInput,
   useSettings,
 } from "@/context/settings"
 import { decode64 } from "@/utils/base64"
@@ -66,20 +63,8 @@ const stopDemoSound = () => {
   demoSoundState.cleanup = undefined
 }
 
-const playDemoSound = (id: string | undefined) => {
+const playDemoSound = (_id: string | undefined) => {
   stopDemoSound()
-  if (!id) return
-
-  const run = ++demoSoundState.run
-  demoSoundState.timeout = setTimeout(() => {
-    void playSoundById(id).then((cleanup) => {
-      if (demoSoundState.run !== run) {
-        cleanup?.()
-        return
-      }
-      demoSoundState.cleanup = cleanup
-    })
-  }, 100)
 }
 
 export const SettingsGeneral: Component = () => {
@@ -220,7 +205,6 @@ export const SettingsGeneral: Component = () => {
   const soundOptions = [noneSound, ...SOUND_OPTIONS]
   const mono = () => monoInput(settings.appearance.font())
   const sans = () => sansInput(settings.appearance.uiFont())
-  const terminal = () => terminalInput(settings.appearance.terminalFont())
 
   const soundSelectProps = (
     enabled: () => boolean,
@@ -548,28 +532,6 @@ export const SettingsGeneral: Component = () => {
           </div>
         </SettingsRow>
 
-        <SettingsRow
-          title={language.t("settings.general.row.terminalFont.title")}
-          description={language.t("settings.general.row.terminalFont.description")}
-        >
-          <div class="w-full sm:w-[220px]">
-            <TextField
-              data-action="settings-terminal-font"
-              label={language.t("settings.general.row.terminalFont.title")}
-              hideLabel
-              type="text"
-              value={terminal()}
-              onChange={(value) => settings.appearance.setTerminalFont(value)}
-              placeholder={terminalDefault}
-              spellcheck={false}
-              autocorrect="off"
-              autocomplete="off"
-              autocapitalize="off"
-              class="text-12-regular"
-              style={{ "font-family": terminalFontFamily(settings.appearance.terminalFont()) }}
-            />
-          </div>
-        </SettingsRow>
       </SettingsList>
     </div>
   )

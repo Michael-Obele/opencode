@@ -36,7 +36,6 @@ import { useProviders } from "@/hooks/use-providers"
 import { dismissToast, setV2Toast, showToast, ToastRegion } from "@/utils/toast"
 import { useServerSDK } from "@/context/server-sdk"
 import { normalizeProjectInfo } from "@/context/global-sync/utils"
-import { clearWorkspaceTerminals } from "@/context/terminal"
 import { pickSessionCacheEvictions } from "@/context/global-sync/session-cache"
 import { useNotification } from "@/context/notification"
 import { usePermission } from "@/context/permission"
@@ -1449,12 +1448,6 @@ export default function LegacyLayout(props: ParentProps) {
 
     const sessions = await listAllSessions(serverSDK().api.session, { directory, order: "desc" }).catch(() => [])
 
-    clearWorkspaceTerminals(
-      directory,
-      sessions.map((s) => s.id),
-      platform,
-      serverSDK().scope,
-    )
     await serverSDK()
       .client.instance.dispose({ directory })
       .catch(() => undefined)
