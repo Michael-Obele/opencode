@@ -655,7 +655,7 @@ export default function Page() {
   const wantsReview = createMemo(() =>
     isDesktop()
       ? desktopFileTreeOpen() ||
-        (desktopReviewOpen() && (activeTab() === "review" || (newSessionDesign() && !!activeFileTab())))
+      (desktopReviewOpen() && (activeTab() === "review" || (newSessionDesign() && !!activeFileTab())))
       : store.mobileTab === "changes",
   )
   const vcsMode = createMemo<VcsMode | undefined>(() => {
@@ -675,13 +675,13 @@ export default function Page() {
       enabled,
       queryFn: mode
         ? () =>
-            sdk()
-              .api.vcs.diff({ location: { directory: sdk().directory }, mode: mode === "git" ? "working" : mode })
-              .then((result) => result.data)
-              .catch((error) => {
-                console.debug("[session-review] failed to load vcs diff", { mode, error })
-                return []
-              })
+          sdk()
+            .api.vcs.diff({ location: { directory: sdk().directory }, mode: mode === "git" ? "working" : mode })
+            .then((result) => result.data)
+            .catch((error) => {
+              console.debug("[session-review] failed to load vcs diff", { mode, error })
+              return []
+            })
         : skipToken,
     }
   })
@@ -857,8 +857,8 @@ export default function Page() {
   let dockHeight = 0
   let scroller: HTMLDivElement | undefined
   let content: HTMLDivElement | undefined
-  let revealMessage = (_id: string) => {}
-  let scrollToEnd = () => {}
+  let revealMessage = (_id: string) => { }
+  let scrollToEnd = () => { }
   let scrollMark = 0
   let messageMark = 0
 
@@ -1552,7 +1552,7 @@ export default function Page() {
     ),
   )
 
-  let fill = () => {}
+  let fill = () => { }
 
   const setScrollRef = (el: HTMLDivElement | undefined) => {
     scroller = el
@@ -1575,8 +1575,8 @@ export default function Page() {
     },
   )
 
-  let captureHistoryAnchor = () => {}
-  let restoreHistoryAnchor = (_done: boolean) => {}
+  let captureHistoryAnchor = () => { }
+  let restoreHistoryAnchor = (_done: boolean) => { }
   const historyRequests = new Set<string>()
   let historyContinuationFrame: number | undefined
   const loadOlder = async () => {
@@ -1806,8 +1806,8 @@ export default function Page() {
   const halt = (sessionID: string) =>
     busy(sessionID)
       ? sdk()
-          .api.session.interrupt({ sessionID })
-          .catch(() => {})
+        .api.session.interrupt({ sessionID })
+        .catch(() => { })
       : Promise.resolve()
 
   const revertMutation = useMutation(() => ({
@@ -2130,20 +2130,20 @@ export default function Page() {
             followup: () =>
               params.id && !isChildSession()
                 ? {
-                    items: followupDock(),
-                    sending: sendingFollowup(),
-                    onSend: (id) => void sendFollowup(params.id!, id, { manual: true }),
-                    onEdit: editFollowup,
-                  }
+                  items: followupDock(),
+                  sending: sendingFollowup(),
+                  onSend: (id) => void sendFollowup(params.id!, id, { manual: true }),
+                  onEdit: editFollowup,
+                }
                 : undefined,
             revert: () =>
               rolled().length > 0
                 ? {
-                    items: rolled(),
-                    restoring: restoring(),
-                    disabled: reverting(),
-                    onRestore: restore,
-                  }
+                  items: rolled(),
+                  restoring: restoring(),
+                  disabled: reverting(),
+                  onRestore: restore,
+                }
                 : undefined,
             onResponseSubmit: resumeScroll,
             openParent: () => {

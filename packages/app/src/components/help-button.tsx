@@ -74,14 +74,14 @@ export function TabsInfoPopup() {
         style={
           windows()
             ? {
-                top: "0",
-                bottom: "0",
-                "inset-inline-end": "0",
-                "inset-inline-start": "auto",
-                "max-height": "100vh",
-                "max-width": "100vw",
-                "border-radius": "0",
-              }
+              top: "0",
+              bottom: "0",
+              "inset-inline-end": "0",
+              "inset-inline-start": "auto",
+              "max-height": "100vh",
+              "max-width": "100vw",
+              "border-radius": "0",
+            }
             : undefined
         }
       >

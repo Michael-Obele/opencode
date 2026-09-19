@@ -24,13 +24,15 @@ perf
 **/e2e
 **/_.test.ts
 \*\*/_.spec.ts
-**/**snapshots**
-**/playwright.config.\*
+**/**snapshots\*\*
+\*\*/playwright.config.\*
 
 # Fly slim: keep the embedded app dist, but don't upload local node_modules/dist
+
 !packages/app/dist
 
 # Never ship web (SvelteKit) or heavy dev artifacts on Fly — app is the embedded UI
+
 packages/web
 packages/tui
 packages/desktop

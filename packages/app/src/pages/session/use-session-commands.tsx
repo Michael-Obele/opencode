@@ -330,7 +330,7 @@ export const useSessionCommands = (actions: SessionCommandContext) => {
     const parts = sync().data.part[message.id]
 
     if (sync().data.session_working(sessionID)) {
-      await session.interrupt({ sessionID }).catch(() => {})
+      await session.interrupt({ sessionID }).catch(() => { })
     }
 
     await runCommand({
@@ -506,12 +506,12 @@ export const useSessionCommands = (actions: SessionCommandContext) => {
         onSelect: openFile,
       }),
       tab &&
-        fileCommand({
-          id: "tab.close",
-          title: language.t("command.tab.close"),
-          keybind: "mod+w",
-          onSelect: closeTab,
-        }),
+      fileCommand({
+        id: "tab.close",
+        title: language.t("command.tab.close"),
+        keybind: "mod+w",
+        onSelect: closeTab,
+      }),
     ].filter((v) => !!v)
   }
 
@@ -535,13 +535,13 @@ export const useSessionCommands = (actions: SessionCommandContext) => {
     }),
     ...(shown()
       ? [
-          viewCommand({
-            id: "fileTree.toggle",
-            title: language.t("command.fileTree.toggle"),
-            keybind: "mod+\\",
-            onSelect: () => layout.fileTree.toggle(),
-          }),
-        ]
+        viewCommand({
+          id: "fileTree.toggle",
+          title: language.t("command.fileTree.toggle"),
+          keybind: "mod+\\",
+          onSelect: () => layout.fileTree.toggle(),
+        }),
+      ]
       : []),
     viewCommand({
       id: "input.focus",
