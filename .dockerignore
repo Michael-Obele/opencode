@@ -1,5 +1,6 @@
 .git
-.opencode
+!.opencode
+!.opencode/skills-global
 .sst
 .turbo
 .wrangler
@@ -34,7 +35,6 @@ perf
 # Never ship web (SvelteKit) or heavy dev artifacts on Fly — app is the embedded UI
 
 packages/web
-packages/tui
 packages/desktop
 packages/console
 packages/storybook

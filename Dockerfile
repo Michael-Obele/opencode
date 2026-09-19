@@ -4,11 +4,13 @@
 # deps; runtime copies only the needed artifacts. Keeps the image small enough
 # for the 512MB Fly VM and avoids shipping test/assets bloat.
 FROM oven/bun:1-slim AS builder
+RUN apt-get update -qq && apt-get install -y --no-install-recommends git ca-certificates && rm -rf /var/lib/apt/lists/*
 ENV HUSKY=0 BUN_RUNTIME_TRANSPILER_CACHE_PATH=0 NODE_ENV=production
 WORKDIR /app
 COPY package.json bun.lock ./
 COPY patches ./patches
 COPY packages/core/script packages/core/script
+COPY packages/app/vendor packages/app/vendor
 COPY packages/app/package.json packages/app/
 COPY packages/client/package.json packages/client/
 COPY packages/codemode/package.json packages/codemode/
@@ -31,18 +33,19 @@ COPY packages/tui/package.json packages/tui/
 COPY packages/ui/package.json packages/ui/
 RUN bun install
 COPY . .
-# Build the Solid app with no sourcemaps (vite.config.ts already disables them)
-# and embed it into the opencode binary via opencode-web-ui.gen.ts
+# Build the Solid app (en-only, no sourcemaps) and compile the server into a
+# single binary that embeds the UI via opencode-web-ui.gen.ts.
 RUN bun run --cwd packages/app build
+# Merge global skills into the repo skills so they ship in the image
+RUN if [ -d .opencode/skills-global ]; then cp -r .opencode/skills-global/* .opencode/skills/ 2>/dev/null || true; fi
+RUN OPENCODE_CHANNEL=prod bun run packages/opencode/script/build.ts --single
 
-FROM oven/bun:1-slim
-ENV HUSKY=0 BUN_RUNTIME_TRANSPILER_CACHE_PATH=0 NODE_ENV=production
+FROM debian:bookworm-slim
+RUN apt-get update -qq && apt-get install -y --no-install-recommends ca-certificates && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
-COPY --from=builder /app/package.json /app/bun.lock ./
-COPY --from=builder /app/patches ./patches
-COPY --from=builder /app/packages ./packages
-COPY --from=builder /app/node_modules ./node_modules
-# Ensure the built app dist is present for the embedded UI
-COPY --from=builder /app/packages/app/dist ./packages/app/dist
+# Compiled binary for the current platform (linux-x64) — no node_modules needed.
+COPY --from=builder /app/packages/opencode/dist/opencode-linux-x64/bin/opencode /usr/local/bin/opencode
+# Skills/config that should be present on Fly (repo .opencode, not XDG volume)
+COPY --from=builder /app/.opencode ./.opencode
 EXPOSE 4096
-CMD ["bun", "run", "packages/opencode/src/index.ts", "serve", "--hostname", "0.0.0.0", "--port", "4096"]
+CMD ["opencode", "serve", "--hostname", "0.0.0.0", "--port", "4096"]
